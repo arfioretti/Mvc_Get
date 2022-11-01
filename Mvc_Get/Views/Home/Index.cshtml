@@ -1,0 +1,87 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div id="page-wrapper">
+    <div class="row">
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table id="myDataTable" class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Category</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-wrapper -->
+@section Scripts{
+    <!-- JS -->
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:51495/api/v1/products",
+                    data: '{}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: OnSuccess,
+                    failure: function (response) {
+                        alert(response.d);
+                    },
+                    error: function (response) {
+                        alert(response.d);
+                    }
+                });
+            });
+            function OnSuccess(response) {
+                $("#myDataTable").DataTable(
+                    {
+                        language: {
+                            lengthMenu: "Exibe _MENU_ Registros por página",
+                            search: "Procurar",
+                            paginate: { "previous": "Retorna", "next": "Avança" },
+                            zeroRecords: "Nada foi encontrado",
+                            info: "Exibindo página _PAGE_ de _PAGES_",
+                            infoEmpty: "Sem registros",
+                            infoFiltered: "(filtrado de _MAX_ regitros totais)"
+                        },
+                        bLengthChange: true,
+                        lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                        bFilter: true,
+                        bSort: true,
+                        bPaginate: true,
+                        data: response,
+                        processing: true,
+
+                        columns:
+                        [
+                            { 'data': "Id" },
+                            { 'data': 'Name' },
+                            { 'data': 'Category' },
+                            { 'data': 'Price' }
+                        ]
+                    }
+                );
+            };
+        });
+    </script>
+}
